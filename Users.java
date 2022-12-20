@@ -33,20 +33,6 @@ public class Users implements Serializable {
     public boolean accountExists(String email) {
         return contas.containsKey(email);
     }
-    /*tputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(this);
-        oos.close();
-        fos.close();
-    }
-
-    public static Users deserialize(String filepath) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(filepath);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        Users accounts = (Users) ois.readObject();
-        ois.close();
-        fis.close();
-        return accounts;
-    }
-    */
+  
 }
 

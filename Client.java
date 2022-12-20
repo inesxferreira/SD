@@ -17,14 +17,14 @@ public class Client {
                            + "1- Iniciar sessão.\n"
                            + "2- Registar uma nova conta.\n"
                            + "\n"
-                           + "Insira o numero corresponde à operação desejo: ");
+                           + "Insira o numero corresponde à operação: ");
             String option = stdin.readLine();
              if(option.equals("1")) {
                 System.out.print("***INICIAR SESSÃO***\n"
                                 + "\n"
-                                + "Introduza o seu endereço de email: ");
+                                + "Introduza um endereço de email: ");
                 String email = stdin.readLine();
-                System.out.print("Introduza a sua password: ");
+                System.out.print("Introduza uma password: ");
                 String password = stdin.readLine();
                 d.send(0, email, password.getBytes());
                  String response = new String(d.receive(0));
@@ -43,6 +43,7 @@ public class Client {
                 d.send(1, email, password.getBytes());
                 String response = new String(d.receive(1));
                 if(!response.startsWith("Erro")) {
+                   
                    // username = email;
                 }
                 System.out.println("\n" + response + "\n");
