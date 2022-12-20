@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,16 +7,14 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
-
 public class Demultiplexer implements AutoCloseable {
     private final Connection tcon;
     private final Lock lock = new ReentrantLock();
-    private final Map<Integer, Entry> buf = new HashMap();
-    private IOException exception = null;
+    private final Map<Integer, Entry> buf = new HashMap<>();
+    private Exception exception = null;
 
-    private class Entry { //listas para gaurdar 
-        //int waiters=0;
+    private class Entry { //listas para guardar 
+      
         Queue<byte[]> queue = new ArrayDeque<>();
         Condition cond= lock.newCondition();
     }
@@ -63,19 +60,19 @@ public class Demultiplexer implements AutoCloseable {
 
     }
 
-    public void send(Pdu pduMessage) {
+    public void send(Pdu pduMessage) throws IOException {
         tcon.send(pduMessage);
 
     }
 
-    public void send(int tag, byte[] data) {
+    public void send(int tag, String email, byte[] data) throws IOException{
         // invocaçao direta da tagged connection, não espera em filas ao contrario do receive
         // para a mesma conexão
-        tcon.send(tag, data);
+        tcon.send(tag,email,data);
 
     }
 
-    public byte[] receive(int tag) {
+    public byte[] receive(int tag) throws Exception {
         // recebe das filas, tira das filas
         // so olha para a fila, se nao existir items/mensagens espera. Não le socket 
         lock.lock();// pq vamos mexer no map
@@ -97,8 +94,6 @@ public class Demultiplexer implements AutoCloseable {
             lock.unlock();
 
         }
-
-        return null;
     }
 
     @Override
