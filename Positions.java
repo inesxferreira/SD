@@ -5,17 +5,45 @@ import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Positions implements Serializable{
-    // trata da localização
+    // class is used to store all positions in the system
 
     public static class Position implements Serializable {
         int x;
         int y;
  
+        //constructor
         public Position(int x, int y)
         {
             this.x = x;
             this.y = y;
         }
+
+        //constructor
+        public Position(Position givenPos)
+        {
+            this.x = givenPos.x;
+            this.y = givenPos.y;
+        }
+
+        //function that helps convert a string coordinate into a position coordinate
+        private static int[] parseToCoord (String l){
+            String[] coord = l.replaceAll("[^\\w\\d]", "").toLowerCase().split("");
+            int[] res = new int[2];
+            res[0] = coord[0].matches("\\d") ? Integer.parseInt(coord[0]) : coord[0].charAt(0) - 'a' + 1;
+            res[1] = coord[1].matches("\\d") ? Integer.parseInt(coord[1]) : coord[1].charAt(0) - 'a' + 1;
+            return res;
+        }
+
+        //constructor for when the position is given in the string format
+        public Position(String givenPos)
+        {
+           int[] pos =parseToCoord(givenPos);
+           this.x= pos[0];
+           this.y =pos[1];
+        }
+
+
+
     }
  
     /* Function to calculate the maximum
