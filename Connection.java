@@ -18,7 +18,7 @@ private final DataInputStream in;
         try {
             wl.lock();
             this.out.writeInt(frame.tag);
-            this.out.writeUTF(frame.email);
+            this.out.writeUTF(frame.nome);
             this.out.writeInt(frame.data.length);
             this.out.write(frame.data);
             this.out.flush();
@@ -28,8 +28,8 @@ private final DataInputStream in;
         }
     }
 
-    public void send(int tag, String email, byte[] data) throws IOException {
-        this.send(new Pdu(tag, email, data));
+    public void send(int tag, String nome, byte[] data) throws IOException {
+        this.send(new Pdu(tag, nome, data));
     }
 
     public Pdu receive() throws IOException {

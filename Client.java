@@ -4,39 +4,38 @@ import java.net.Socket;
 
 public class Client {
 
-    public static void main(String[] args ) throws Exception{
-        Socket s = new Socket("localhost", 12345);
+    public static void main(String[] args) throws Exception {
+        Socket s = new Socket("localhost", 12346);
         Demultiplexer d = new Demultiplexer(new Connection(s));
         d.start();
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-        int var=0;
-        String name= null;//used for the menu
-        while(var==0){
-             System.out.print("----TrotiUM----\n"
-                           + "\n"
-                           + "Que operação pretende efetuar?\n"
-                           + "1-> Iniciar sessão.\n"
-                           + "2-> Registar uma nova conta.\n"
-                           + "0-> Sair"
-                           + "\n"
-                           + "Insira o numero corresponde à operação: ");
+        int var = 0;
+        String name = null;// used for the menu
+        while (var == 0) {
+            System.out.print("----TrotiUM----\n"
+                    + "\n"
+                    + "Que operação pretende efetuar?\n"
+                    + "1-> Iniciar sessão.\n"
+                    + "2-> Registar uma nova conta.\n"
+                    + "0-> Sair"
+                    + "\n"
+                    + "Insira o numero corresponde à operação: ");
             String option = stdin.readLine();
-             if(option.equals("1")) {
+            if (option.equals("1")) {
                 System.out.print("----INICIAR SESSÃO----\n"
-                                + "\n"
-                                + "Introduza o seu username: ");
+                        + "\n"
+                        + "Introduza o seu username: ");
                 String username = stdin.readLine();
                 System.out.print("Introduza a sua password: ");
                 String password = stdin.readLine();
                 d.send(0, username, password.getBytes());
                 String response = new String(d.receive(0));
-                if(!response.startsWith("Erro")) {
-                   var = 1;
-                   name = username;
+                if (!response.startsWith("Erro")) {
+                    var = 1;
+                    name = username;
                 }
                 System.out.println("\n" + response + "\n");
-            }
-          else if (option.equals("2")) {
+            } else if (option.equals("2")) {
                 System.out.print("----REGISTAR NOVA CONTA----\n"
                         + "\n"
                         + "Introduza um username: ");
@@ -45,36 +44,38 @@ public class Client {
                 String password = stdin.readLine();
                 d.send(1, username, password.getBytes());
                 String response = new String(d.receive(1));
-                if(!response.startsWith("Erro")) {
-                   
+                if (!response.startsWith("Erro")) {
+
                 }
                 System.out.println("\n" + response + "\n");
-            }
-            else if (option.equals("0")) {
+            } else if (option.equals("0")) {
                 System.out.println("Até breve!");
-                System.exit(0);}
-        } 
-        while(var==1){
-            while (true){
-            System.out.print("----Bem vindo à TrotiUM  "+ name +"  , ----\n"
-                          + "\n"
-                          + "Por favor, insira as coordenadas da sua localização (x,y):"
-                          + "\n");
-           String inputPos = stdin.readLine();
-           String userPos = inputPos.strip();  //returns a string with all leading and trailing white spaces removed
-           Positions.Position uPos = new Positions.Position(userPos); // creating a new Position given the user position
-           String strippedPos = String.format("%d %d", uPos.x, uPos.y);
-           d.send(2,name,strippedPos.getBytes());
-           System.out.print("\n---- As sua localização foi registada!\n");
-           var = 2;
-           break;
-        }}d.close();
-           
-    } 
+                System.exit(0);
+            }
+        }
+        while (var == 1) {
+            while (true) {
+                System.out.print("---- Bem vindo à TrotiUM " + name + " ----\n"
+                        + "\n"
+                        + "Por favor, insira as coordenadas da sua localização (x,y):"
+                        + "\n");
+                String location = stdin.readLine();
+                String userPos = location.strip();
+
+                try {
+                    Positions pos = new Positions(userPos);
+                    String strippedPos = String.format("%d %d", pos.x, pos.y);
+                    if (pos.x > 20 || pos.y > 20) { // excede as medidas do mapa (20 X 20)
+                        throw new PositionNotValidException();
+                    }
+
+                    d.send(2, name, strippedPos.getBytes());
+                    var = 2;
+                } catch (IllegalStateException e) {
+                     System.out.println("\nErro - localização inválida - tente novamente.");
+                }
+            }
+        }
+        d.close();
+    }
 }
-    
-
-      
-
-
-    

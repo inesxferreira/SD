@@ -7,32 +7,49 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class Users implements Serializable {
     private final HashMap<String, String> contas; //key: email ,e pass 
+    private HashMap<String, Integer> pontosU; //recompensa do user
     public ReentrantReadWriteLock l = new ReentrantReadWriteLock();
 
     public Users() {
         this.contas = new HashMap<>();
+        this.pontosU = new HashMap<>();  
+        }
+
+    /**
+    * função que retorna o nr de pontos atual de um dado user
+    */ 
+    public Integer getPontos (String user) { 
+        return pontosU.get(user);
     }
 
     /**
-     * returns a password do user dado ou null se o email não estiver registado
+     * retorna a password do user dado ou null se o email não estiver registado
      */
-    public String getPassword(String email) {
-        return contas.get(email);
+    public String getPassword(String u) {
+        return contas.get(u);
     }
-
+    
     /**
      * Adiciona uma nova conta com as email e pass
      */
-    public void addUser(String email, String password) {
-        contas.put(email, password);
+    public void addUser(String username, String password) {
+        contas.put(username, password); //cria a conta
+        pontosU.put(username,0); // ao criar a conta devemos inicializar com 0 pontos(a recompensa)
     }
 
     /**
      * Verifica se a conta existe no sistema
      */
-    public boolean accountExists(String email) {
-        return contas.containsKey(email);
+    public boolean accountExists(String u) {
+        return contas.containsKey(u);
     }
+    
+      /* Gestao de recompensas A->B, raio D
+    1ª ver se em A há mais que uma trotinete na posição
+    2ª ver se em B não há troninetes num raio D
+    se sim atribui se um credito ao user
+     */
+ 
     /*
      * converte o objeto para uma stream que podemos enviar ou guarda num ficheiro 
      */
@@ -54,6 +71,7 @@ public class Users implements Serializable {
         out.close();
         in.close();
         return login;
+    }
     
-}}
+}
 

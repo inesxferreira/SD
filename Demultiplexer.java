@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Demultiplexer implements AutoCloseable {
@@ -88,8 +87,8 @@ public class Demultiplexer implements AutoCloseable {
         connection.send(frame);
     }
 
-    public void send(int tag, String email, byte[] data) throws IOException {
-        connection.send(tag, email, data);
+    public void send(int tag, String nome, byte[] data) throws IOException {
+        connection.send(tag, nome, data);
     }
 
     public byte[] receive(int tag) throws IOException, InterruptedException {

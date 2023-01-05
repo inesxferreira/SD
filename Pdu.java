@@ -2,12 +2,12 @@
 public class Pdu {
 
     public final int tag;
-    public final String email;
+    public final String nome;
     public final byte[] data;
     
-    public Pdu(int tag, String email, byte[] data) {
+    public Pdu(int tag, String nome, byte[] data) {
         this.tag = tag;
-        this.email = email;
+        this.nome = nome;
         this.data = data;
     }
 
