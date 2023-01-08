@@ -18,6 +18,10 @@ public class Demultiplexer implements AutoCloseable {
         exception = true;
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
     public class DataQueue {
         ReentrantLock l;
         Condition cond;

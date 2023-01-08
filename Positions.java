@@ -15,8 +15,8 @@ public class Positions implements Serializable {
     private ReentrantReadWriteLock l = new ReentrantReadWriteLock();
 
     // class is used to store all positions in the system
-    private int x;
-    private int y;
+    int x;
+    int y;
 
     // constructor
     public Positions(int x, int y) {
@@ -31,11 +31,11 @@ public class Positions implements Serializable {
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public void setX(int x) {
@@ -59,23 +59,21 @@ public class Positions implements Serializable {
     }
 
     // function that helps convert a string coordinate into a position coordinate
-    private static int[] parseToCoord(String l) {
-        String[] coord = l.replaceAll("[^\\w\\d]", "").toLowerCase().split("");
-        int[] res = new int[2];
-        res[0] = coord[0].matches("\\d") ? Integer.parseInt(coord[0]) : coord[0].charAt(0) - 'a' + 1;
-        res[1] = coord[1].matches("\\d") ? Integer.parseInt(coord[1]) : coord[1].charAt(0) - 'a' + 1;
-        return res;
+    public static String[] parseToCoord(String str) {
+        String strNew = str.replace("(", "");
+        String strNew2 = strNew.replace(")", "");
+        String[] strsep = strNew2.split(",");
+        return strsep;
     }
 
     // constructor for when the position is given in the string format
-    public Positions(String givenPos) {
-        int[] pos = parseToCoord(givenPos);
-        this.x = pos[0];
-        this.y = pos[1];
+    public Positions(String givenpos) {
+        String[] se = parseToCoord(givenpos);
+        this.x = Integer.parseInt(se[0]);
+        this.y = Integer.parseInt(se[1]);
     }
 
     private HashMap<Positions, HashSet<String>> posAtual; // posição associada a users
-
 
     public Positions() {
         this.posAtual = new HashMap<>();
@@ -86,10 +84,17 @@ public class Positions implements Serializable {
         out.writeInt(this.y);
     }
 
-    public Positions deserialize(DataInputStream in) throws IOException {
+    public static Positions deserialize(DataInputStream in) throws IOException {
         int x = in.readInt();
         int y = in.readInt();
         return new Positions(x, y);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(").append(this.x).append(",").append(this.y).append(")");
+        return sb.toString();
     }
 }
 

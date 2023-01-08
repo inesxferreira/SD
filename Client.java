@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -72,14 +73,39 @@ public class Client {
 
                 try {
                     Positions pos = new Positions(userPos);
-                    d.send(2, name, String.format("%d %d", pos.x, pos.y).getBytes());
-                    d.send(2, name, String.format(userPos).getBytes());
-                    break;
+                    d.send(2, name, userPos.getBytes());
+
                 } catch (IllegalStateException e) {
                     System.out.println("\nErro - localização inválida - tente novamente.");
+
                 }
 
+                // PositionsList listaperto =
+                // PositionsList.deserialize(d.getConnection().getIn());
+                System.out.println("\n As seguintes trotinetes estão no máximo a D=2 de si:\n");
+
+                String resp = new String(d.receive(2));
+                // System.out.println("\n" + resp + "\n"); // System.out.prin("\n" + resp
+                // +"\n");
+                System.out.println("Por favor, Insira as coordenadas da trotinete (x,y) que pretende reservar");
+                String trotinetePos = stdin.readLine().strip();
+                try {
+                    Positions posT = new Positions(trotinetePos);
+                    d.send(2, trotinetePos, String.format("%d %d", posT.getX(), posT.getY()).getBytes());
+                } catch (IllegalStateException e) {
+                    System.out.println("\nErro - localização inválida - tente novamente.");
+
+                }
+                System.out.println("Insira as cordenadas no seu destino (x,y): " + "\n");
+                String posFinal = stdin.readLine().strip();
+
+                var = 2;
             }
+        }
+        while (var == 2)
+
+        {
+
         }
         d.close();
     }
