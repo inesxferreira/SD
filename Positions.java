@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Positions implements Serializable {
 
-    private ReadWriteLock l = new ReadWriteLock();
+    private ReentrantReadWriteLock l = new ReentrantReadWriteLock();
 
     // class is used to store all positions in the system
     private int x;
@@ -49,7 +49,13 @@ public class Positions implements Serializable {
     }
 
     public void setCoords(int x, int y) {
-
+        l.writeLock().lock();
+        try {
+            this.x = x;
+            this.y = y;
+        } finally {
+            l.writeLock().unlock();
+        }
     }
 
     // function that helps convert a string coordinate into a position coordinate
@@ -70,7 +76,6 @@ public class Positions implements Serializable {
 
     private HashMap<Positions, HashSet<String>> posAtual; // posição associada a users
 
-    public ReentrantReadWriteLock l = new ReentrantReadWriteLock();
 
     public Positions() {
         this.posAtual = new HashMap<>();

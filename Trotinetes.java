@@ -40,7 +40,7 @@ public class Trotinetes {
         try {
             this.trotinetesAvailable.add(aP);
         }
-        finally{
+        finally {
             l.unlock();
         }
     }
@@ -59,7 +59,7 @@ public class Trotinetes {
         Positions userL = uP;
         l.lock();
         for (int i=0; i<this.trotinetesAvailable.size();i++){
-            if (manhattanDist(this.trotinetesAvailable.get(i).x, this.trotinetesAvailable.get(i).y, userL.x, userL.y) <= raio){
+            if (manhattanDist(this.trotinetesAvailable.get(i).getX(), this.trotinetesAvailable.get(i).getY(), userL.getX(), userL.getY()) <= raio){
                 closest.add(this.trotinetesAvailable.get(i));
             } 
         }
