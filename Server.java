@@ -41,6 +41,9 @@ public class Server {
                             String email;
                             String password;
                             String pass;
+                            Positions origem;
+                            Positions destino;
+                            int multiplasT = 0;
                             if (frame.tag == 0) {
                                 System.out.println("User está a tentar fazer login");
                                 email = frame.nome;
@@ -73,7 +76,7 @@ public class Server {
 
                                 String l = new String(frame.data);
                                 Positions newpos = new Positions(l); // posição do utilizador
-                                System.out.print("newpos:(" + newpos.x + "," + newpos.y + ")");
+                                System.out.println("newpos:(" + newpos.x + "," + newpos.y + ")");
 
                                 // c.send(2,"","lista de trotinetes disponiveis".getBytes());
                                 try {
@@ -92,6 +95,26 @@ public class Server {
                                     e.printStackTrace();
                                 }
                             }
+                            if (frame.tag == 3) {
+                                System.out.println("Trotinete reservada ");
+                                String l = new String(frame.data);
+                                Positions posTrotinete = new Positions(l); // posição do utilizador
+                                origem = posTrotinete;
+                                if (trotinetes.moreThanOneTrotinete(posTrotinete))
+                                    multiplasT = 1;
+                                trotinetes.removeTrotinete(posTrotinete);
+
+                            }
+                            if (frame.tag == 4) {
+                                System.out.println("Destino guardado ");
+                                String l = new String(frame.data);
+                                Positions finalPos = new Positions(l);
+                                destino = finalPos;
+                                if (trotinetes.isClosestEmpty(finalPos) && multiplasT == 1) {
+                                    // getRecompensaParaUser
+                                }
+
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -104,9 +127,7 @@ public class Server {
 
             }
 
-        } catch (
-
-        IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

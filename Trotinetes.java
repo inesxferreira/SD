@@ -72,4 +72,26 @@ public class Trotinetes {
         return closest;
     }
 
+    public Boolean moreThanOneTrotinete(Positions t) {
+        int contador = 0;
+        l.lock();
+        for (int i = 0; i < this.trotinetesAvailable.size(); i++) {
+            Positions atualP = this.trotinetesAvailable.get(i);
+            if (atualP == t)
+                contador++;
+        }
+        l.unlock();
+        if (contador > 1)
+            return true;
+        else
+            return false;
+    }
+
+    public Boolean isClosestEmpty(Positions p) {
+        if (getClosestTrotinetes(p).size() == 0)
+            return true;
+        else
+            return false;
+    }
+
 }

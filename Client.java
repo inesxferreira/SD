@@ -1,7 +1,11 @@
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.io.IOException;
 
 public class Client {
 
@@ -77,27 +81,39 @@ public class Client {
 
                 } catch (IllegalStateException e) {
                     System.out.println("\nErro - localização inválida - tente novamente.");
-
                 }
 
-                // PositionsList listaperto =
-                // PositionsList.deserialize(d.getConnection().getIn());
-                System.out.println("\n As seguintes trotinetes estão no máximo a D=2 de si:\n");
-
+                System.out.println("\n As seguintes trotinetes estão no máximo a D=2 de si:");
                 String resp = new String(d.receive(2));
-                // System.out.println("\n" + resp + "\n"); // System.out.prin("\n" + resp
-                // +"\n");
-                System.out.println("Por favor, Insira as coordenadas da trotinete (x,y) que pretende reservar");
+                resp = Arrays.stream(resp.split("\\s+")).distinct().collect(Collectors.joining(" "));
+                System.out.println("\n" + resp + "\n");
+
+                System.out.println("Insira as coordenadas da trotinete (x,y) que pretende reservar");
                 String trotinetePos = stdin.readLine().strip();
                 try {
                     Positions posT = new Positions(trotinetePos);
-                    d.send(2, trotinetePos, String.format("%d %d", posT.getX(), posT.getY()).getBytes());
+                    if (posT.getX() <= 20 || posT.getY() <= 20) { // dentro das coordenadas do mapa
+                        d.send(3, trotinetePos, String.format("%d %d", posT.getX(), posT.getY()).getBytes());
+                    }
                 } catch (IllegalStateException e) {
+                    // destino sai do mapa
                     System.out.println("\nErro - localização inválida - tente novamente.");
 
                 }
-                System.out.println("Insira as cordenadas no seu destino (x,y): " + "\n");
-                String posFinal = stdin.readLine().strip();
+                // calcular a recompensas
+
+                System.out.println("Insira as cordenadas no seu destino (x,y):" + "\n");
+                String posF = stdin.readLine().strip();
+                try {
+                    Positions posFinal = new Positions(posF);
+                    if (posFinal.getX() <= 20 || posFinal.getY() <= 20) { // dentro das coordenadas do mapa
+                        d.send(4, posF, String.format("%d %d", posFinal.getX(), posFinal.getY()).getBytes());
+                    } else {
+                        System.out.println("Destino Inválido - não pertence às dimensões do mapa");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 var = 2;
             }
