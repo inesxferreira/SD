@@ -21,17 +21,17 @@ public class Trotinetes {
             return dist;} 
 
     public ArrayList<Positions> initializeTrotinetesArray (){
-        this.trotinetesAvailable.add((1,2));
-        this.trotinetesAvailable.add((3,4));
-        this.trotinetesAvailable.add((6,4));
-        this.trotinetesAvailable.add((8,9));
-        this.trotinetesAvailable.add((2,2));
-        this.trotinetesAvailable.add((10,2));
-        this.trotinetesAvailable.add((15,9));
-        this.trotinetesAvailable.add((11,11));
-        this.trotinetesAvailable.add((16,7));
-        this.trotinetesAvailable.add((9,17));
-        this.trotinetesAvailable.add((8,13));
+        this.trotinetesAvailable.add(new Positions(1,2));
+        this.trotinetesAvailable.add(new Positions(3,4));
+        this.trotinetesAvailable.add(new Positions(6,4));
+        this.trotinetesAvailable.add(new Positions(8,9));
+        this.trotinetesAvailable.add(new Positions(2,2));
+        this.trotinetesAvailable.add(new Positions(10,2));
+        this.trotinetesAvailable.add(new Positions(15,9));
+        this.trotinetesAvailable.add(new Positions(11,11));
+        this.trotinetesAvailable.add(new Positions(16,7));
+        this.trotinetesAvailable.add(new Positions(9,17));
+        this.trotinetesAvailable.add(new Positions(8,13));
         return this.trotinetesAvailable;
     }
 

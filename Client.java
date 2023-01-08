@@ -34,8 +34,17 @@ public class Client {
                     var = 1;
                     name = username;
                 }
+                if (response.startsWith("Conta não existe")) {
+                    System.out.println("\n" + response + "\n");
+                }
+                if (response.startsWith("Erro")) {
+                    System.out.println("\n" + response + "\n");
+                }
+
                 System.out.println("\n" + response + "\n");
-            } else if (option.equals("2")) {
+            }
+
+            else if (option.equals("2")) {
                 System.out.print("----REGISTAR NOVA CONTA----\n"
                         + "\n"
                         + "Introduza um username: ");
@@ -59,21 +68,17 @@ public class Client {
                         + "\n"
                         + "Por favor, insira as coordenadas da sua localização (x,y):"
                         + "\n");
-                String location = stdin.readLine();
-                String userPos = location.strip();
+                String userPos = stdin.readLine().strip();
 
                 try {
                     Positions pos = new Positions(userPos);
-                    String strippedPos = String.format("%d %d", pos.x, pos.y);
-                    if (pos.x > 20 || pos.y > 20) { // excede as medidas do mapa (20 X 20)
-                        throw new PositionNotValidException();
-                    }
-
-                    d.send(2, name, strippedPos.getBytes());
-                    var = 2;
+                    d.send(2, name, String.format("%d %d", pos.x, pos.y).getBytes());
+                    d.send(2, name, String.format(userPos).getBytes());
+                    break;
                 } catch (IllegalStateException e) {
-                     System.out.println("\nErro - localização inválida - tente novamente.");
+                    System.out.println("\nErro - localização inválida - tente novamente.");
                 }
+
             }
         }
         d.close();
