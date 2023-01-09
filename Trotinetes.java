@@ -7,23 +7,13 @@ public class Trotinetes {
 
     private List<Positions> trotinetesAvailable;
     private ReentrantLock l;
-    private int codReserva;
-    private Positions origemT;
-    private Positions destino;
     private boolean alteracao;
-
     private Recompensas recompensas;
-    
 
     public Trotinetes(int c) {
-        // this.codigo = c;
-        // this.pos = new Positions();
         this.trotinetesAvailable = new PositionsList();
         initializeTrotinetesArray();
         this.l = new ReentrantLock();
-        this.codReserva = 0;
-        this.origemT = new Positions();
-        this.destino = new Positions();
         this.alteracao = false;
     }
 
@@ -31,34 +21,11 @@ public class Trotinetes {
         return trotinetesAvailable;
     }
 
-    public String makeCodReserva() {
-        this.codReserva++;
-        int n = this.codReserva;
-        return Integer.toString(n);
-    }
-
-    public Positions getOrigemT() {
-        return this.origemT;
-    }
-
-    public void setOrigemT(Positions o) {
-        this.origemT = o;
-    }
-
-    public Positions getDestino() {
-        return this.destino;
-    }
-
-    public void setDestino(Positions o) {
-        this.destino = o;
-    }
-
     public boolean getAlteracao() {
         l.lock();
         try {
             return this.alteracao;
-        }
-        finally {
+        } finally {
             l.unlock();
         }
     }
@@ -67,8 +34,7 @@ public class Trotinetes {
         l.lock();
         try {
             this.alteracao = alteracao;
-        }
-        finally {
+        } finally {
             l.unlock();
         }
     }
@@ -91,6 +57,7 @@ public class Trotinetes {
     }
 
     public void initializeTrotinetesArray() {
+        this.trotinetesAvailable.add(new Positions(1, 2));
         this.trotinetesAvailable.add(new Positions(1, 2));
         this.trotinetesAvailable.add(new Positions(3, 4));
         this.trotinetesAvailable.add(new Positions(6, 4));
@@ -121,12 +88,12 @@ public class Trotinetes {
     }
 
     public void removeTrotinete(Positions rP) { // recebe as coordenadas de uma trotinete que ficou reservada e deve
-                                                   // ser removida do array - devolve o array original sem aquela
-                                                   // coordenada
+                                                // ser removida do array - devolve o array original sem aquela
+                                                // coordenada
         l.lock();
         recompensas.lock();
         try {
-            if(this.trotinetesAvailable.contains(rP)) {
+            if (this.trotinetesAvailable.contains(rP)) {
                 this.trotinetesAvailable.remove(rP);// remove a 1ª instância da posição no array
                 alteracao = true;
                 recompensas.signal();
@@ -143,24 +110,26 @@ public class Trotinetes {
         l.lock();
         for (int i = 0; i < this.trotinetesAvailable.size(); i++) {
             Positions atualP = this.trotinetesAvailable.get(i);
-            if ((atualP.getX() == newpos.getX()) && (atualP.getY() == newpos.getY())){
+            if ((atualP.getX() == newpos.getX()) && (atualP.getY() == newpos.getY())) {
                 closest.add(this.trotinetesAvailable.get(i));
-            }
-            else if (manhattanDist(atualP.getX(), atualP.getY(), newpos.getX(), newpos.getY()) <= 2) {
+            } else if (manhattanDist(atualP.getX(), atualP.getY(), newpos.getX(), newpos.getY()) <= 2) {
                 closest.add(this.trotinetesAvailable.get(i));
-                
+
             }
         }
         l.unlock(); // can be improved
         return closest;
     }
+
     public Boolean moreThanOneTrotinete(Positions t) {
         int contador = 0;
         l.lock();
         for (int i = 0; i < this.trotinetesAvailable.size(); i++) {
             Positions atualP = this.trotinetesAvailable.get(i);
-            if (atualP == t)
+            if (atualP.equals(t)) {
                 contador++;
+                //System.out.print("contador" +  contador );
+            }
         }
         l.unlock();
         if (contador > 1)

@@ -96,6 +96,10 @@ public class Positions implements Serializable {
         sb.append("(").append(this.x).append(",").append(this.y).append(")");
         return sb.toString();
     }
+
+    public boolean equals(Positions obj) {
+        return this.x == obj.x && this.y == obj.y;
+    }
 }
 
 /*

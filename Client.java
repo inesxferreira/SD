@@ -35,7 +35,7 @@ public class Client {
                     + "\n"
                     + "Insira o número corresponde à operação: ");
             String option = stdin.readLine();
-            if (option.equals("1")) { //início de sessão
+            if (option.equals("1")) { // início de sessão
                 System.out.print(
                         BOLD_ON + BACK + "\n" + "              Iniciar Sessão              " + RESET + BOLD_OFF
                                 + "\n"
@@ -59,7 +59,7 @@ public class Client {
                 System.out.println("\n" + GREEN + response + RESET + "\n");
             }
 
-            else if (option.equals("2")) { //registo de conta
+            else if (option.equals("2")) { // registo de conta
                 System.out.print("\n" + BOLD_ON + BACK + "\n" + "              Registar Nova Conta              "
                         + RESET + BOLD_OFF
                         + "\n"
@@ -69,7 +69,8 @@ public class Client {
                 String password = stdin.readLine();
                 d.send(1, username, password.getBytes());
                 String response = new String(d.receive(1));
-                if (!response.startsWith("Erro")) {                System.out.println("Até breve...");
+                if (!response.startsWith("Erro")) {
+                    System.out.println("Até breve...");
                     System.out.println("Até breve...");
 
                 }
@@ -84,7 +85,7 @@ public class Client {
         while (var == 1) { // tratar da localização
 
             System.out.print(
-                    "\n" + BOLD_ON + BACK + "\n" + "              Bem vindo, " + name + "              "+RESET
+                    "\n" + BOLD_ON + BACK + "\n" + "              Bem vindo, " + name + "              " + RESET
                             + BOLD_OFF
                             + "\n"
                             + "Por favor, insira as coordenadas da sua localização (x,y):"
@@ -103,11 +104,22 @@ public class Client {
         }
 
         String resp = new String(d.receive(2));
-        while (var == 2) { // tratar da lista das trotinetes disponíveis
+        while (var == 2) { // tratar da lista das trotinetes disponíveis e respetivas recompensas
             System.out.println("-----------------------------------------------------------------");
             System.out.println("\n As seguintes trotinetes estão no máximo a D=2 de si:");
             String aux = resp;
             System.out.println("\n" + GREEN + aux + RESET + "\n");
+            System.out.println("-----------------------------------------------------------------");
+            System.out.println("\n Os pares origem-destino com recompensas no nosso mapa são : ");
+            String recompensa = new String(d.receive(5));
+            if(recompensa.compareTo("0") == 0) System.out.println(GREEN+ "\n" +"Não existem recompensas disponíveis."+"\n"+RESET);
+            else{
+                String[] res = recompensa.split(":", 2);
+                System.out.println("\n"+"Origens acessíveis a no máximo D=2 de si:" + "\n");
+                System.out.println(GREEN+res[0]+RESET);
+                System.out.println("\n"+"Destinos elegíveis para recompensa:" + "\n");
+                System.out.println(GREEN+res[1]+RESET);
+            }
             System.out.println("-----------------------------------------------------------------");
             System.out.println("Insira as coordenadas da trotinete (x,y) que pretende reservar:");
             String trotinetePos = stdin.readLine().strip();
@@ -131,15 +143,16 @@ public class Client {
                 }
             } else {
                 System.out.println("-----------------------------------------------------------------");
-                System.out.println("\n" + RED + "As coordenadas inseridas não pertencem à listagem!" + RESET + "\n");
+                System.out.println("\n" + RED + "As coordenadas inseridas não pertencemtrotinetes.lockTrotinetes() à listagem!" + RESET + "\n");
                 System.out.println("-----------------------------------------------------------------");
                 aux = "";
             }
         }
-        while (var == 3)
 
-        { // tratar do código de reserva
+        while (var == 3) { // tratar do código de reserva
+            System.out.println("entrou");
             String answer = new String(d.receive(3));
+            System.out.println("recebeu");
             String[] resposta = answer.split(" ");
             System.out.println("-----------------------------------------------------------------");
             System.out.println(
@@ -149,18 +162,19 @@ public class Client {
             var = 4;
         }
         // calcular a recompensas
-        while (var == 4) { // tratar estacionamento
-            System.out.println("Insira as cordenadas do local de estacionamento da trotinete (x,y):" + "\n");
-            String posF = stdin.readLine().strip();
+        while (var == 4) { // tratar estacionamento1
+            System.out.println("Insira o código de reserva que lhe foi atribuído e o local estacionamento da trotinete (x,y):");
+            String posF = stdin.readLine().strip(); //código + posição
             try {
-                Positions posFinal = new Positions(posF);
+                String[] separateS = posF.split(" ");
+                Positions posFinal = new Positions(separateS[1]);
                 if (posFinal.getX() <= 20 || posFinal.getY() <= 20) { // dentro das coordenadas do mapa
                     d.send(4, posF, posF.getBytes());
                     var = 5;
                 } else {
                     System.out.println("-----------------------------------------------------------------");
                     System.out.println(
-                            "\n" + RED + "Estacionamento Inválido - não pertence às dimensões do mapa" + RESET + "\n");
+                            "\n" + RED + "Estacionamento Inválido - não pertence às dime1sões do mapa" + RESET + "\n");
                     System.out.println("-----------------------------------------------------------------");
                 }
             } catch (IOException e) {
@@ -174,11 +188,11 @@ public class Client {
             System.out.println("-----------------------------------------------------------------");
             var = 6;
         }
-        d.close();
+       
         while (var == 6) {// sai
             System.out.println("Até breve...");
             break;
 
-        }
-    }
+        }d.close();
 }
+    } 
