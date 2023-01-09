@@ -4,17 +4,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.concurrent.locks.ReentrantLock;
+import java.time.Duration;
+import java.time.Instant;
 
 public class Server {
     static int WORKERS_PER_CONNECTION = 3;
     ReentrantLock ll = new ReentrantLock();
 
+    public static final int TAMANHOMAPA = 20;
+
     public static void main(String[] args) throws Exception {
         final Users user;
         final Positions position;
-        final Trotinetes trotinetes = new Trotinetes(50);
+        final Trotinetes trotinetes = new Trotinetes(TAMANHOMAPA);
+        Recompensas r = new Recompensas(trotinetes);
 
-        try (ServerSocket s = new ServerSocket(12346)) {
+        // Thread t = new Thread(new WorkerRecompensas(r, trotinetes));
+        // t.start();
+
+        try (ServerSocket s = new ServerSocket(12347)) {
             File f = new File("registos.ser");
             if (f.exists() == false) {
                 user = new Users();
@@ -41,9 +49,8 @@ public class Server {
                             String email;
                             String password;
                             String pass;
-                            Positions origem;
-                            Positions destino;
                             int multiplasT = 0;
+
                             if (frame.tag == 0) {
                                 System.out.println("User está a tentar fazer login");
                                 email = frame.nome;
@@ -96,23 +103,36 @@ public class Server {
                                 }
                             }
                             if (frame.tag == 3) {
-                                System.out.println("Trotinete reservada ");
+                                String codReserva = trotinetes.makeCodReserva();
+                                System.out.println("Trotinete reservada com código de reserva " + codReserva);
                                 String l = new String(frame.data);
                                 Positions posTrotinete = new Positions(l); // posição do utilizador
-                                origem = posTrotinete;
-                                if (trotinetes.moreThanOneTrotinete(posTrotinete))
-                                    multiplasT = 1;
+                                trotinetes.setOrigemT(posTrotinete);
                                 trotinetes.removeTrotinete(posTrotinete);
+                                String answer = l + " " + codReserva;
+                                c.send(3, "", answer.getBytes());
 
                             }
                             if (frame.tag == 4) {
-                                System.out.println("Destino guardado ");
+                                System.out.println("Estacionamento guardado ");
                                 String l = new String(frame.data);
                                 Positions finalPos = new Positions(l);
-                                destino = finalPos;
-                                if (trotinetes.isClosestEmpty(finalPos) && multiplasT == 1) {
-                                    // getRecompensaParaUser
-                                }
+                                trotinetes.setDestino(finalPos);
+                                System.out.println(trotinetes.getOrigemT());
+                                System.out.println(trotinetes.getDestino());
+                                int distBetweenOrigemEDest = Trotinetes.manhattanDist(trotinetes.getOrigemT().getX(),
+                                        trotinetes.getOrigemT().getY(),
+                                        trotinetes.getDestino().getX(), trotinetes.getDestino().getY());
+
+                                int timeAtEstacionamento = distBetweenOrigemEDest + 4;
+                                int timeAtReserva = distBetweenOrigemEDest + 2;
+                                int differenceTime = timeAtEstacionamento - timeAtReserva;
+
+                                int custoViagem = differenceTime + distBetweenOrigemEDest;
+                                String custo = Integer.toString(custoViagem);
+                                c.send(4, "", custo.getBytes());
+                            }
+                            if (frame.tag == 5) {
 
                             }
                         }
