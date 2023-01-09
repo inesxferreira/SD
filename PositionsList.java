@@ -32,4 +32,23 @@ public class PositionsList extends ArrayList<Positions> {
         }
         return sb.toString();
     }
+
+
+    public boolean contains(Positions o) {
+        for(Positions p : this) {
+            if(p.equals(o)) return true;
+        }
+        return false;
+    }
+
+    public boolean remove(Positions o) {
+        for(int i = 0; i < this.size(); i++) {
+            if(this.get(i).equals(o)) {
+                this.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

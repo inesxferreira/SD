@@ -20,11 +20,16 @@ public class Recompensas {
 
     public PositionsList getDestinos() {
         l.lock();
-        PositionsList res = new PositionsList();
-        for(Positions p: this.destinos) {
-            res.add(p);
+        try {
+            PositionsList res = new PositionsList();
+            for(Positions p: this.destinos) {
+                res.add(p);
+            }
+            return res;
         }
-        return res;
+        finally {
+            l.unlock();
+        }
     }
 
     public void await() throws InterruptedException {
@@ -63,13 +68,13 @@ public class Recompensas {
                 }
             }
         } finally {
-            trotinetes.unlockTrotinetes();
             trotinetes.setAlteracao(false);
+            trotinetes.unlockTrotinetes();
             l.unlock();
         }
     }
 
-    public PositionsList getClosestTrotinetes(Positions newpos) { // recebe as coordenadas do user, e devolve a lista
+    public PositionsList getClosestOrigens(Positions newpos) { // recebe as coordenadas do user, e devolve a lista
         // de trotinetes mais próximas, posicao do cliente
         PositionsList closest = new PositionsList();
         l.lock();
@@ -90,17 +95,16 @@ public class Recompensas {
 
 
     public boolean isRecompensa(Positions origem, Positions destino) {
-        return origens.contains(origem) && destinos.contains(destino);
+        boolean n;
+        n= origens.contains(origem) && destinos.contains(destino);
+        return n;
+
     }
 
-    public void getRecompensa(Positions origem, Positions destino) {
-
-        if (trotinetes.isClosestEmpty(destino) && trotinetes.moreThanOneTrotinete(origem)) { // ver se em origem ha mais
-                                                                                             // que uma trotinete E no
-                                                                                             // destino nao ha nnh no
-                                                                                             // raio de 2
-
-        }
+    public int valorRecompensa(Positions origem, Positions destino) {
+        // return (int) (Math.random() * 100); //just in case xd
+        
+        return (Trotinetes.manhattanDist(origem.getX(), origem.getY(), destino.getX(), destino.getY()) / 2);
     }
 
     @Override

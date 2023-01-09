@@ -17,15 +17,14 @@ public class Server {
     public static void main(String[] args) throws Exception {
         final Users user;
         final CodUser coduser = new CodUser();
-        final Positions position;
-        final Trotinetes trotinetes = new Trotinetes(TAMANHOMAPA);
+        Trotinetes trotinetes = new Trotinetes(TAMANHOMAPA);
         Recompensas r = new Recompensas(trotinetes);
         trotinetes.setRecompensas(r);
 
         Thread workerrecompensas = new Thread(new WorkerRecompensas(r, trotinetes));
         workerrecompensas.start();
 
-        try (ServerSocket s = new ServerSocket(12347)) {
+        try (ServerSocket s = new ServerSocket(12348)) {
             File f = new File("registos.ser");
             if (f.exists() == false) {
                 user = new Users();
@@ -46,10 +45,9 @@ public class Server {
 
                 Runnable worker = () -> {
                     Positions userPos = new Positions();
-                    
+                    boolean flag = true;
                     try (c) {
-                        while (true) {
-
+                        while (flag) {
                             Pdu frame = c.receive();
                             String email;
                             String password;
@@ -86,7 +84,7 @@ public class Server {
                                 String l = new String(frame.data);
                                 Positions newpos = new Positions(l); // posição do utilizador
                                 userPos = newpos;
-                                System.out.println("newpos:(" + newpos.getX() + "," + newpos.getY() + ")");
+                                System.out.println("Posição Utilizador:(" + newpos.getX() + "," + newpos.getY() + ")");
                                 try {
                                     PositionsList listaperto = trotinetes.getClosestTrotinetes(newpos);
                                     String result = listaperto.toString();
@@ -95,8 +93,7 @@ public class Server {
                                     e.printStackTrace();
                                 }
                                 System.out.println("Listagem de possíveis recompensas.");
-                                System.out.println("newpos:(" + userPos.getX() + "," + userPos.getY() + ")");
-                                PositionsList origensclosest = r.getClosestTrotinetes(userPos);
+                                PositionsList origensclosest = r.getClosestOrigens(userPos);
                                 
                                 String res = "0";
                                 
@@ -109,14 +106,12 @@ public class Server {
                             if (frame.tag == 3) {
                                 String reserva = coduser.makeCodReserva();
                                 System.out.println("Trotinete reservada com código de reserva " + reserva);
-                                //trotinetes.lockTrotinetes(); // dar lock às trotinetes quando reservamos
                                 String l = new String(frame.data);
                                 Positions posTrotinete = new Positions(l); // posição da trotinete reservada
                                 coduser.addCod(reserva,posTrotinete);// a adição do par (codigo de reserva);
-                                //trotinetes.removeTrotinete(posTrotinete);
                                 String answer = l + " " + reserva;
                                 c.send(3, "", answer.getBytes());
-                                //trotinetes.unlockTrotinetes();
+                                trotinetes.removeTrotinete(posTrotinete);
                             }
                             if (frame.tag == 4) {
                                 System.out.println("Estacionamento guardado ");
@@ -125,8 +120,6 @@ public class Server {
                                 String codigoReserva = separateS[0];
                                 Positions finalPos = new Positions(separateS[1]);//destino final
                                 Positions origemTrotinete = coduser.getOrigem(codigoReserva);
-                                System.out.println(origemTrotinete);
-                                System.out.println(finalPos);
                                 trotinetes.lockTrotinetes();
                                 int distBetweenOrigemEDest = Trotinetes.manhattanDist(origemTrotinete.getX(),
                                         origemTrotinete.getY(),
@@ -137,24 +130,42 @@ public class Server {
 
                                 int custoViagem = differenceTime + distBetweenOrigemEDest;
                                 String custo = Integer.toString(custoViagem);
-                                trotinetes.unlockTrotinetes();
-                                c.send(4, "", custo.getBytes());
-                            }
+                                System.out.println("recompensa : " + r);
 
+                                System.out.println("origem : " + origemTrotinete);
+                                System.out.println("destino : " + finalPos);
+                                
+                                r.lock(); // smth wrong with this sajfhgbsdgjsdpog
+                                boolean isRecomp = r.isRecompensa(origemTrotinete, finalPos);
+                                System.out.println("bool : " + isRecomp);
+                                
+                                int recompensa;
+                                if(isRecomp){ 
+                                    System.out.println("existe recompensa");
+                                    recompensa = r.valorRecompensa(origemTrotinete, finalPos);
+                                } 
+                                else recompensa=0;
+
+                                r.unlock();
+                                System.out.println("valor da recompensa: "+ recompensa);
+                                String rec = Integer.toString(recompensa);
+                                String custoRec = custo + " " +rec;
+                                c.send(4, "", custoRec.getBytes());
+                                trotinetes.unlockTrotinetes();
+                                trotinetes.addTrotinete(finalPos);
+                                flag = false;
+                            }
                         }
                     } catch (IOException e) {
+                        System.out.println("Encerrando...");
                         e.printStackTrace();
                     }
                 };
                 for (int i = 0; i < WORKERS_PER_CONNECTION; ++i) {
                     new Thread(worker).start();
                 }
-
             }
-
-        } catch (
-
-        IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

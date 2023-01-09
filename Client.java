@@ -17,7 +17,7 @@ public class Client {
     public static final String NAME = "\u001B[96m";
 
     public static void main(String[] args) throws Exception {
-        Socket s = new Socket("localhost", 12347);
+        Socket s = new Socket("localhost", 12348);
         Demultiplexer d = new Demultiplexer(new Connection(s));
         d.start();
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
@@ -61,7 +61,7 @@ public class Client {
 
             else if (option.equals("2")) { // registo de conta
                 System.out.print("\n" + BOLD_ON + BACK + "\n" + "              Registar Nova Conta              "
-                        + RESET + BOLD_OFF
+                    + RESET + BOLD_OFF
                         + "\n"
                         + "Introduza um username: ");
                 String username = stdin.readLine();
@@ -71,8 +71,6 @@ public class Client {
                 String response = new String(d.receive(1));
                 if (!response.startsWith("Erro")) {
                     System.out.println("Até breve...");
-                    System.out.println("Até breve...");
-
                 }
                 var = 0;
                 System.out.println("\n" + GREEN + response + RESET + "\n");
@@ -83,7 +81,6 @@ public class Client {
             }
         }
         while (var == 1) { // tratar da localização
-
             System.out.print(
                     "\n" + BOLD_ON + BACK + "\n" + "              Bem vindo, " + name + "              " + RESET
                             + BOLD_OFF
@@ -150,9 +147,7 @@ public class Client {
         }
 
         while (var == 3) { // tratar do código de reserva
-            System.out.println("entrou");
             String answer = new String(d.receive(3));
-            System.out.println("recebeu");
             String[] resposta = answer.split(" ");
             System.out.println("-----------------------------------------------------------------");
             System.out.println(
@@ -179,20 +174,26 @@ public class Client {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+        }
         }
         while (var == 5) { // tratar do custo de viagem
             String a = new String(d.receive(4));
+
+            String [] separateByspaces = a.split(" ");
+            String custo = separateByspaces[0];
+            String recompensa = separateByspaces[1];
+
             System.out.println("-----------------------------------------------------------------");
-            System.out.println("\n" + GREEN + " A viagem tem o custo de " + a + RESET + "\n");
+            System.out.println("\n" + GREEN + " A viagem tem o custo de " + custo + RESET + "\n");
+            System.out.println("-----------------------------------------------------------------");
+            System.out.println("\n" + GREEN + " Ganhou a recompensa " + recompensa + RESET + "\n");
             System.out.println("-----------------------------------------------------------------");
             var = 6;
         }
-       
         while (var == 6) {// sai
             System.out.println("Até breve...");
             break;
-
-        }d.close();
-}
-    } 
+        }
+        d.close();
+    }
+} 

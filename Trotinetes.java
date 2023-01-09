@@ -76,13 +76,13 @@ public class Trotinetes {
                                              // pelo que deve ser adicionada à lista - devolve o array original mais a
                                              // trotinete
         l.lock();
-        recompensas.lock();
         try {
             this.trotinetesAvailable.add(aP);
             alteracao = true;
+            recompensas.lock();
             recompensas.signal();
-        } finally {
             recompensas.unlock();
+        } finally {
             l.unlock();
         }
     }
@@ -91,15 +91,15 @@ public class Trotinetes {
                                                 // ser removida do array - devolve o array original sem aquela
                                                 // coordenada
         l.lock();
-        recompensas.lock();
         try {
             if (this.trotinetesAvailable.contains(rP)) {
                 this.trotinetesAvailable.remove(rP);// remove a 1ª instância da posição no array
                 alteracao = true;
+                recompensas.lock();
                 recompensas.signal();
+                recompensas.unlock();
             }
         } finally {
-            recompensas.unlock();
             l.unlock();
         }
     }
