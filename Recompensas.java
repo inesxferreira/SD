@@ -93,12 +93,10 @@ public class Recompensas {
         return closest;
     }
 
-
     public boolean isRecompensa(Positions origem, Positions destino) {
         boolean n;
         n= origens.contains(origem) && destinos.contains(destino);
         return n;
-
     }
 
     public int valorRecompensa(Positions origem, Positions destino) {
@@ -111,5 +109,4 @@ public class Recompensas {
     public String toString() {
         return origens.toString() + ":" + destinos.toString();
     }
-
 }

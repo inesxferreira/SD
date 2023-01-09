@@ -21,9 +21,6 @@ public class PositionsList extends ArrayList<Positions> {
         return l;
     }
 
-    
-
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -32,7 +29,6 @@ public class PositionsList extends ArrayList<Positions> {
         }
         return sb.toString();
     }
-
 
     public boolean contains(Positions o) {
         for(Positions p : this) {
@@ -43,12 +39,11 @@ public class PositionsList extends ArrayList<Positions> {
 
     public boolean remove(Positions o) {
         for(int i = 0; i < this.size(); i++) {
-            if(this.get(i).equals(o)) {
+            if(o.equals(this.get(i))) {
                 this.remove(i);
                 return true;
             }
         }
         return false;
     }
-
 }

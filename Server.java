@@ -84,7 +84,7 @@ public class Server {
                                 String l = new String(frame.data);
                                 Positions newpos = new Positions(l); // posição do utilizador
                                 userPos = newpos;
-                                System.out.println("Posição Utilizador:(" + newpos.getX() + "," + newpos.getY() + ")");
+                                System.out.println("Posição Utilizador: (" + newpos.getX() + "," + newpos.getY() + ")");
                                 try {
                                     PositionsList listaperto = trotinetes.getClosestTrotinetes(newpos);
                                     String result = listaperto.toString();
@@ -130,14 +130,12 @@ public class Server {
 
                                 int custoViagem = differenceTime + distBetweenOrigemEDest;
                                 String custo = Integer.toString(custoViagem);
-                                System.out.println("recompensa : " + r);
 
-                                System.out.println("origem : " + origemTrotinete);
-                                System.out.println("destino : " + finalPos);
+                                System.out.println("Origem Troti: " + origemTrotinete);
+                                System.out.println("Destino Troti: " + finalPos);
                                 
                                 r.lock(); // smth wrong with this sajfhgbsdgjsdpog
                                 boolean isRecomp = r.isRecompensa(origemTrotinete, finalPos);
-                                System.out.println("bool : " + isRecomp);
                                 
                                 int recompensa;
                                 if(isRecomp){ 
@@ -147,7 +145,7 @@ public class Server {
                                 else recompensa=0;
 
                                 r.unlock();
-                                System.out.println("valor da recompensa: "+ recompensa);
+                                System.out.println("Valor da recompensa: "+ recompensa);
                                 String rec = Integer.toString(recompensa);
                                 String custoRec = custo + " " +rec;
                                 c.send(4, "", custoRec.getBytes());
@@ -156,8 +154,8 @@ public class Server {
                                 flag = false;
                             }
                         }
-                    } catch (IOException e) {
                         System.out.println("Encerrando...");
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 };

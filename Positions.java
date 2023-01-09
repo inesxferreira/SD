@@ -101,29 +101,3 @@ public class Positions implements Serializable {
         return this.x == obj.x && this.y == obj.y;
     }
 }
-
-/*
- * 
- * //converte o objeto para uma stream que podemos enviar ou guarda num ficheiro
- * public void serialize(String filepath) throws IOException {
- * FileOutputStream in = new FileOutputStream(filepath);
- * ObjectOutputStream out = new ObjectOutputStream(in);
- * out.writeObject(this);
- * out.close();
- * in.close();
- * }
- * 
- * 
- * //Deserialization is the process of converting Object stream to
- * // actual Java Object
- * public static Positions deserialize(String filepath) throws IOException,
- * ClassNotFoundException {
- * FileInputStream in = new FileInputStream(filepath);
- * ObjectInputStream out = new ObjectInputStream(in);
- * Positions posicao = (Positions) out.readObject();
- * out.close();
- * in.close();
- * return posicao;
- * 
- * }
- */

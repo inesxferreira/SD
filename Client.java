@@ -140,7 +140,7 @@ public class Client {
                 }
             } else {
                 System.out.println("-----------------------------------------------------------------");
-                System.out.println("\n" + RED + "As coordenadas inseridas não pertencemtrotinetes.lockTrotinetes() à listagem!" + RESET + "\n");
+                System.out.println("\n" + RED + "As coordenadas inseridas não pertencem à listagem!" + RESET + "\n");
                 System.out.println("-----------------------------------------------------------------");
                 aux = "";
             }

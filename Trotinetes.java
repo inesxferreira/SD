@@ -5,7 +5,7 @@ import java.lang.*;
 
 public class Trotinetes {
 
-    private List<Positions> trotinetesAvailable;
+    private PositionsList trotinetesAvailable;
     private ReentrantLock l;
     private boolean alteracao;
     private Recompensas recompensas;
@@ -17,7 +17,7 @@ public class Trotinetes {
         this.alteracao = false;
     }
 
-    public List<Positions> getTrotinetesAvailable() {
+    public PositionsList getTrotinetesAvailable() {
         return trotinetesAvailable;
     }
 

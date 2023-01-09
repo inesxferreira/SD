@@ -12,13 +12,15 @@ public class CodUser {
     }
 
     public String makeCodReserva() {
-      //  l.lock();
-        int n;
-        this.codReserva++;
-        n= this.codReserva;
-       // l.unlock();
-        return Integer.toString(n);
-        
+      l.lock();
+        try {
+            int n;
+            this.codReserva++;
+            n= this.codReserva;
+            return Integer.toString(n);
+        } finally {
+            l.unlock();
+        }  
     }
 
     public void addCod(String cod, Positions origem) {
