@@ -70,7 +70,7 @@ public class Client {
                 d.send(1, username, password.getBytes());
                 String response = new String(d.receive(1));
                 if (!response.startsWith("Erro")) {
-                    var = 3;
+                    var = 0;
                 }
                 System.out.println("\n" + GREEN + response + RESET + "\n");
 
