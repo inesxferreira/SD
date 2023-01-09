@@ -32,14 +32,16 @@ public class PositionsList extends ArrayList<Positions> {
 
     public boolean contains(Positions o) {
         for(Positions p : this) {
-            if(p.equals(o)) return true;
+            if(o.equals(p)) {
+                return true;
+            }
         }
         return false;
     }
 
     public boolean remove(Positions o) {
         for(int i = 0; i < this.size(); i++) {
-            if(o.equals(this.get(i))) {
+            if(this.get(i).equals(o)) {
                 this.remove(i);
                 return true;
             }

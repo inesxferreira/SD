@@ -97,7 +97,10 @@ public class Positions implements Serializable {
         return sb.toString();
     }
 
-    public boolean equals(Positions obj) {
-        return this.x == obj.x && this.y == obj.y;
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || o.getClass() != this.getClass()) return false;
+        Positions p = (Positions) o;
+        return this.x == p.x && this.y == p.y;
     }
 }

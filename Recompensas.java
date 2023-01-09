@@ -85,7 +85,6 @@ public class Recompensas {
                     closest.add(this.origens.get(i));
                 } else if (Trotinetes.manhattanDist(atualP.getX(), atualP.getY(), newpos.getX(), newpos.getY()) <= 2) {
                     closest.add(this.origens.get(i));
-
                 }
             }
         }
@@ -94,13 +93,13 @@ public class Recompensas {
     }
 
     public boolean isRecompensa(Positions origem, Positions destino) {
-        boolean n;
-        n= origens.contains(origem) && destinos.contains(destino);
-        return n;
+        System.out.println(origens);
+        System.out.println(origens.indexOf(origem) + " " + destinos.indexOf(destino));
+        return origens.indexOf(origem) >= 0 && origens.indexOf(origem) < origens.size() && destinos.indexOf(destino) >= 0 && destinos.indexOf(destino) < destinos.size();
     }
 
     public int valorRecompensa(Positions origem, Positions destino) {
-        // return (int) (Math.random() * 100); //just in case xd
+        //return (int) (Math.random() * 100); //just in case xd
         
         return (Trotinetes.manhattanDist(origem.getX(), origem.getY(), destino.getX(), destino.getY()) / 2);
     }

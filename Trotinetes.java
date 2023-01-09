@@ -121,7 +121,7 @@ public class Trotinetes {
         return closest;
     }
 
-    public Boolean moreThanOneTrotinete(Positions t) {
+    public boolean moreThanOneTrotinete(Positions t) {
         int contador = 0;
         l.lock();
         for (int i = 0; i < this.trotinetesAvailable.size(); i++) {
