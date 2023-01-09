@@ -29,13 +29,13 @@ public class Client {
             System.out.print(BOLD_ON + BACK + "\n" + "              TrotiUM              " + RESET + BOLD_OFF
                     + "\n"
                     + "Que operação pretende efetuar?\n"
-                    + "1-> Iniciar sessão.\n"
-                    + "2-> Registar uma nova conta.\n"
+                    + "1-> Iniciar sessão\n"
+                    + "2-> Registar uma nova conta\n"
                     + "0-> Sair"
                     + "\n"
                     + "Insira o número corresponde à operação: ");
             String option = stdin.readLine();
-            if (option.equals("1")) {
+            if (option.equals("1")) { //início de sessão
                 System.out.print(
                         BOLD_ON + BACK + "\n" + "              Iniciar Sessão              " + RESET + BOLD_OFF
                                 + "\n"
@@ -59,7 +59,7 @@ public class Client {
                 System.out.println("\n" + GREEN + response + RESET + "\n");
             }
 
-            else if (option.equals("2")) {
+            else if (option.equals("2")) { //registo de conta
                 System.out.print("\n" + BOLD_ON + BACK + "\n" + "              Registar Nova Conta              "
                         + RESET + BOLD_OFF
                         + "\n"
@@ -69,19 +69,22 @@ public class Client {
                 String password = stdin.readLine();
                 d.send(1, username, password.getBytes());
                 String response = new String(d.receive(1));
-                if (!response.startsWith("Erro")) {
-                    var = 0;
+                if (!response.startsWith("Erro")) {                System.out.println("Até breve...");
+                    System.out.println("Até breve...");
+
                 }
+                var = 0;
                 System.out.println("\n" + GREEN + response + RESET + "\n");
 
             } else if (option.equals("0")) {
                 System.out.println("Até breve...");
+                var = 6;
             }
         }
         while (var == 1) { // tratar da localização
 
             System.out.print(
-                    "\n" + BOLD_ON + BACK + "\n" + "              Bem vindo, " + name + RESET
+                    "\n" + BOLD_ON + BACK + "\n" + "              Bem vindo, " + name + "              "+RESET
                             + BOLD_OFF
                             + "\n"
                             + "Por favor, insira as coordenadas da sua localização (x,y):"
@@ -104,7 +107,6 @@ public class Client {
             System.out.println("-----------------------------------------------------------------");
             System.out.println("\n As seguintes trotinetes estão no máximo a D=2 de si:");
             String aux = resp;
-            aux = Arrays.stream(aux.split("\\s+")).distinct().collect(Collectors.joining(" "));
             System.out.println("\n" + GREEN + aux + RESET + "\n");
             System.out.println("-----------------------------------------------------------------");
             System.out.println("Insira as coordenadas da trotinete (x,y) que pretende reservar:");
@@ -173,8 +175,9 @@ public class Client {
             var = 6;
         }
         d.close();
-        while (var == 6) {
-            // sai
+        while (var == 6) {// sai
+            System.out.println("Até breve...");
+            break;
 
         }
     }

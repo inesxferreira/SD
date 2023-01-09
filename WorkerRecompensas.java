@@ -10,6 +10,7 @@ public class WorkerRecompensas implements Runnable {
 
     @Override
     public void run() {
+        r.lock();
         try {
             while (true) {
                 while (!t.getAlteracao()) {
@@ -19,6 +20,9 @@ public class WorkerRecompensas implements Runnable {
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        finally {
+            r.unlock();
         }
     }
 

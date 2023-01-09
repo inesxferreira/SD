@@ -12,6 +12,9 @@ public class Trotinetes {
     private Positions destino;
     private boolean alteracao;
 
+    private Recompensas recompensas;
+    
+
     public Trotinetes(int c) {
         // this.codigo = c;
         // this.pos = new Positions();
@@ -51,11 +54,27 @@ public class Trotinetes {
     }
 
     public boolean getAlteracao() {
-        return this.alteracao;
+        l.lock();
+        try {
+            return this.alteracao;
+        }
+        finally {
+            l.unlock();
+        }
     }
 
     public void setAlteracao(boolean alteracao) {
-        this.alteracao = alteracao;
+        l.lock();
+        try {
+            this.alteracao = alteracao;
+        }
+        finally {
+            l.unlock();
+        }
+    }
+
+    public void setRecompensas(Recompensas recompensas) {
+        this.recompensas = recompensas;
     }
 
     public static int manhattanDist(int X1, int Y1, int X2, int Y2) {
@@ -79,6 +98,7 @@ public class Trotinetes {
         this.trotinetesAvailable.add(new Positions(2, 2));
         this.trotinetesAvailable.add(new Positions(10, 2));
         this.trotinetesAvailable.add(new Positions(15, 9));
+        this.trotinetesAvailable.add(new Positions(16, 9));
         this.trotinetesAvailable.add(new Positions(11, 11));
         this.trotinetesAvailable.add(new Positions(16, 7));
         this.trotinetesAvailable.add(new Positions(9, 17));
@@ -89,22 +109,30 @@ public class Trotinetes {
                                              // pelo que deve ser adicionada à lista - devolve o array original mais a
                                              // trotinete
         l.lock();
+        recompensas.lock();
         try {
             this.trotinetesAvailable.add(aP);
-        } finally {
             alteracao = true;
+            recompensas.signal();
+        } finally {
+            recompensas.unlock();
             l.unlock();
         }
     }
 
-    public boolean removeTrotinete(Positions rP) { // recebe as coordenadas de uma trotinete que ficou reservada e deve
+    public void removeTrotinete(Positions rP) { // recebe as coordenadas de uma trotinete que ficou reservada e deve
                                                    // ser removida do array - devolve o array original sem aquela
                                                    // coordenada
         l.lock();
+        recompensas.lock();
         try {
-            return this.trotinetesAvailable.remove(rP);// remove a 1ª instância da posição no array
+            if(this.trotinetesAvailable.contains(rP)) {
+                this.trotinetesAvailable.remove(rP);// remove a 1ª instância da posição no array
+                alteracao = true;
+                recompensas.signal();
+            }
         } finally {
-            alteracao = true;
+            recompensas.unlock();
             l.unlock();
         }
     }
@@ -115,14 +143,17 @@ public class Trotinetes {
         l.lock();
         for (int i = 0; i < this.trotinetesAvailable.size(); i++) {
             Positions atualP = this.trotinetesAvailable.get(i);
-            if (manhattanDist(atualP.x, atualP.y, newpos.x, newpos.y) <= 2) {
+            if ((atualP.getX() == newpos.getX()) && (atualP.getY() == newpos.getY())){
                 closest.add(this.trotinetesAvailable.get(i));
+            }
+            else if (manhattanDist(atualP.getX(), atualP.getY(), newpos.getX(), newpos.getY()) <= 2) {
+                closest.add(this.trotinetesAvailable.get(i));
+                
             }
         }
         l.unlock(); // can be improved
         return closest;
     }
-
     public Boolean moreThanOneTrotinete(Positions t) {
         int contador = 0;
         l.lock();

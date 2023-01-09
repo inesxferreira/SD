@@ -26,10 +26,18 @@ public class Recompensas {
         condAlteracao.signal();
     }
 
+    public void lock() {
+        l.lock();
+    }
+
+    public void unlock(){
+        l.unlock();
+    }
+
     public void makeRecompensas() {
+        l.lock();
         this.origens = new PositionsList();
         this.destinos = new PositionsList();
-        l.lock();
         trotinetes.lockTrotinetes();
         try {
             for (int x = 0; x < Server.TAMANHOMAPA; x++) {
@@ -47,6 +55,7 @@ public class Recompensas {
             }
         } finally {
             trotinetes.unlockTrotinetes();
+            trotinetes.setAlteracao(false);
             l.unlock();
         }
     }

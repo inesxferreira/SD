@@ -3,9 +3,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 
 public class Server {
     static int WORKERS_PER_CONNECTION = 3;
@@ -18,9 +20,10 @@ public class Server {
         final Positions position;
         final Trotinetes trotinetes = new Trotinetes(TAMANHOMAPA);
         Recompensas r = new Recompensas(trotinetes);
+        trotinetes.setRecompensas(r);
 
-        // Thread t = new Thread(new WorkerRecompensas(r, trotinetes));
-        // t.start();
+        Thread workerrecompensas = new Thread(new WorkerRecompensas(r, trotinetes));
+        workerrecompensas.start();
 
         try (ServerSocket s = new ServerSocket(12347)) {
             File f = new File("registos.ser");
@@ -61,7 +64,7 @@ public class Server {
                                 } finally {
                                     user.l.readLock().unlock();
                                 }
-                                if (pass.equals(password)) {
+                                if (pass.equals(password)) { //dados corretos para início de sessão
                                     c.send(0, "", "Sessão iniciada!".getBytes());
                                 } else if (!user.accountExists(email)) {// se a conta não existe
                                     c.send(0, "", "Conta não existe.".getBytes());
@@ -77,27 +80,15 @@ public class Server {
                                 user.serialize("registos.ser");
                                 c.send(1, "", "Nova conta Registada".getBytes());
                             }
-                            if (frame.tag == 2) {
+                            if (frame.tag == 2) { 
                                 System.out.println("Localização do user.");
-                                // 1 2 -> (1,2)
-
                                 String l = new String(frame.data);
                                 Positions newpos = new Positions(l); // posição do utilizador
-                                System.out.println("newpos:(" + newpos.x + "," + newpos.y + ")");
-
-                                // c.send(2,"","lista de trotinetes disponiveis".getBytes());
+                                System.out.println("newpos:(" + newpos.getX() + "," + newpos.getY() + ")");
                                 try {
-                                    String result = "";
                                     PositionsList listaperto = trotinetes.getClosestTrotinetes(newpos);
-                                    // listaperto.serialize(c.getOut());
-                                    for (int i = 0; i < listaperto.size(); ++i) {
-                                        String stringResult = "(" + listaperto.get(i).x + "," + listaperto.get(i).y
-                                                + ")";
-                                        result = stringResult.concat(" "); // to separate the strinfgs
-                                        result = result.concat(stringResult); // concatena a nova posição à beira
-                                    }
+                                    String result = listaperto.toString();
                                     c.send(2, "", result.getBytes());
-
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -111,7 +102,6 @@ public class Server {
                                 trotinetes.removeTrotinete(posTrotinete);
                                 String answer = l + " " + codReserva;
                                 c.send(3, "", answer.getBytes());
-
                             }
                             if (frame.tag == 4) {
                                 System.out.println("Estacionamento guardado ");
